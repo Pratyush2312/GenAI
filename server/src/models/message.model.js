@@ -6,13 +6,14 @@ const messageSchema = new mongoose.Schema({
         enum: ['user', 'assistant', 'tool'],
         required: true
     },
-    conten: {
+    content: {
         type: String,
         required: true
     },
     conversation: {
-        type: mongoose.Types.ObjectId,
-        ref: "Conversation"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation",
+        required: true
     }
 }, { timestamps: { createdAt: 'createdAt', updatedAt: false } });
 

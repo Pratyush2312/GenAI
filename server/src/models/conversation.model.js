@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Types.ObjectId,
-        ref: User,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     },
     title: {
