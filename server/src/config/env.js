@@ -32,5 +32,6 @@ export const config = Object.freeze({
   nodeEnv,
   mongoUri: required("MONGODB_URI"),
   accessTokenSecret,
-  refreshTokenSecret
+  refreshTokenSecret,
+  GROQ_API_KEY:required("GROQ_API_KEY")
 });
