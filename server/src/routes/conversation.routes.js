@@ -1,4 +1,7 @@
 import { Router } from 'express';
+import { handleMessage } from './../controller/conversation.controller.js';
+import { conversationValidator } from './../validators/conversation.validator.js';
+import { requireAuth } from './../middleware/auth.middleware.js';
 
 const router = Router();
 
@@ -9,6 +12,6 @@ const router = Router();
  * req.body should contain the user message and conversation ID (conversationId is optional)
  */
 
-router.post('/')
+router.post('/', requireAuth, conversationValidator, handleMessage);
 
 export default router;

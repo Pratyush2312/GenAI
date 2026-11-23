@@ -2,11 +2,11 @@ import { config } from "../config/env.js";
 import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendSuccess } from "../utils/apiResponse.js";
-import { generateTitle } from './../services/ai/ai-title.service';
+import { generateTitle } from './../services/ai/ai-title.service.js';
 import { createConversation, findConversationByIdAndUser } from '../DAO/conversation.dao.js';
 import { findMessagesByConversation, createMessage } from '../DAO/message.dao.js';
 import { AIMessage, HumanMessage } from "langchain";
-import { model } from "mongoose";
+import model from "../services/ai/main.service.js";
 /**
  * @POST
  * @route /api/v1/conversation
@@ -20,7 +20,8 @@ export const handleMessage = asyncHandler(async (req, res, next) => {
     let conversation = null;
     if (!conversationId) {
         const { title } = await generateTitle(content);
-        conversation = await createConversation({ userId: user.id, title });
+        console.log(title);
+        conversation = await createConversation(user.id,title);
     }
     else {
         conversation = await findConversationByIdAndUser({ conversationId, userId: user.id });

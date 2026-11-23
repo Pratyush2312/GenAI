@@ -30,6 +30,6 @@ export const generateTitle = async(message) => {
 
         `)
     const humanMessage = new HumanMessage(message);
-    const response = await model.invoke([systemMessage, humanMessage]);
+    const response = await structureModel.invoke([systemMessage, humanMessage]);
     return response;
 }
