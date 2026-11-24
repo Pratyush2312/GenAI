@@ -3,7 +3,7 @@ import { AppError } from "../utils/AppError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { sendSuccess } from "../utils/apiResponse.js";
 import { generateTitle } from './../services/ai/ai-title.service.js';
-import { createConversation, findConversationByIdAndUser } from '../DAO/conversation.dao.js';
+import { createConversation, findConversationByIdAndUser, getAllConversationsByUser } from '../DAO/conversation.dao.js';
 import { findMessagesByConversation, createMessage } from '../DAO/message.dao.js';
 import { AIMessage, HumanMessage } from "langchain";
 import model from "../services/ai/main.service.js";
@@ -21,7 +21,7 @@ export const handleMessage = asyncHandler(async (req, res, next) => {
     if (!conversationId) {
         const { title } = await generateTitle(content);
         console.log(title);
-        conversation = await createConversation(user.id,title);
+        conversation = await createConversation(user.id, title);
     }
     else {
         conversation = await findConversationByIdAndUser({ conversationId, userId: user.id });
@@ -51,7 +51,7 @@ export const handleMessage = asyncHandler(async (req, res, next) => {
     await createMessage({
         role: "user",
         content,
-        conversationId:conversation.id
+        conversationId: conversation.id
     })
 
     let aiChunk = null;
@@ -70,6 +70,35 @@ export const handleMessage = asyncHandler(async (req, res, next) => {
     await createMessage({
         role: "assistant",
         content: aiChunk.content,
-        conversationId:conversation._id
+        conversationId: conversation._id
     })
+})
+
+/**
+ * @GET 
+ * @route /api/v1/conversation
+ * @description get all conversations of the user
+ */
+
+export const getAllConversations = asyncHandler(async (req, res) => {
+    const { user } = req;
+    const conversations = await getAllConversationsByUser(user.id);
+    return sendSuccess(res, 200, "Conversations fetched successfully", { conversations });
+})
+
+/**
+ * @GET 
+ * @route /api/v1/conversation/messages/:conversationId
+ * @description get all messages of a specific conversation
+ */
+
+export const getMessagesByConversation = asyncHandler(async (req, res, next) => {
+    const { conversationId } = req.params;
+    const { user } = req;
+    const conversation = await findConversationByIdAndUser(conversationId, user.id);
+    if (!conversation) {
+        return next(new AppError(404, 'Conversation not found'));
+    }
+    const messages = await findMessagesByConversation(conversationId);
+    return sendSuccess(res, 200, 'Messages fetched successfully', { messages });
 })

@@ -42,3 +42,11 @@ export async function updateConversationLastMessage(conversationId, lastMessageA
     { new: true, runValidators: true }
   ).exec();
 }
+
+/**
+ * @param {string | import("mongoose").Types.ObjectId} userId Owner Identifier.
+ * @returns {Promise<import("mongoose").Document[]>}
+ */
+export async function getAllConversationsByUser(userId) { 
+  return ConversationModel.find({ user: userId }).exec();
+}
