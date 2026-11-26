@@ -8,7 +8,7 @@ import {
   setAuthError,
   setChecking,
   setSubmitting
-} from "../state/authSlice.js";
+} from "../state/auth.slice.js";
 
 export function useAuth() {
   const dispatch = useDispatch();
